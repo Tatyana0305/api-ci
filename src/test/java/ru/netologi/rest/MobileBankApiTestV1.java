@@ -1,5 +1,6 @@
 package ru.netologi.rest;
 
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -20,9 +21,11 @@ public class MobileBankApiTestV1 {
                 .body(matchesJsonSchemaInClasspath("accounts.schema.json"))
                 .body("", hasSize(3))
                 .body("[0].id", equalTo(1))
-                .body("[2].currency", equalTo("RUR"))
-                .body("[2].balance", greaterThan(0));
-
+                .body("[2].currency", equalTo("RUB"))
+                .body("[2].balance", greaterThan(0))
+                .header("Content-Type", "application/json; charset=UTF-8")
+                .contentType(ContentType.JSON.withCharset("UTF-8"))
+                .body("every{ it.balance >=0}", is(true));
 
     }
 }
